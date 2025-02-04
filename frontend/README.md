@@ -27,5 +27,5 @@ To get your code up and running on your own system, follow these steps:
       ```
     - To compile the SCSS files compressed, run:
       ```bash
-      yarn sassass-mins
+      yarn sass-mins
       ```
