@@ -6,7 +6,7 @@ export const http = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    // 'ApiKey': 'c66b5486-b22e-49f8-8738-62fbb55ac9c5'
+    // 'ApiKey': '<key>'
   },
   timeout: 30,
 });
