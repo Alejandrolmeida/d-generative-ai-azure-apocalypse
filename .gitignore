@@ -36,6 +36,7 @@ pip-log.txt
 # React exclusions
 node_modules/
 build/
+dist/
 coverage/
 .env
 
