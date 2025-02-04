@@ -23,22 +23,35 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-11-01' = {
 }
 var subnetId = vnet.properties.subnets[0].id
 
-resource nsg 'Microsoft.Network/networkSecurityGroups@2021-05-01' = {
+// Recurso: Public IP para la VM
+resource publicIp 'Microsoft.Network/publicIpAddresses@2020-08-01' = {
+  name: '${prefix}-pip'
+  location: location
+  sku: {
+    name: 'Standard'
+  }
+  properties: {
+    publicIPAllocationMethod: 'Static'
+  }
+}
+
+// Recurso: NSG con regla para permitir tráfico SSH desde 185.243.139.60
+resource nsg 'Microsoft.Network/networkSecurityGroups@2020-05-01' = {
   name: '${prefix}-nsg'
   location: location
   properties: {
     securityRules: [
       {
-        name: 'Allow-All'
+        name: 'Allow-SSH'
         properties: {
-          priority: 100
-          direction: 'Inbound'
-          access: 'Allow'
-          protocol: '*'
-          sourceAddressPrefix: '*'
+          protocol: 'Tcp'
           sourcePortRange: '*'
+          destinationPortRange: '22'
+          sourceAddressPrefix: '185.243.139.60'
           destinationAddressPrefix: '*'
-          destinationPortRange: '*'
+          access: 'Allow'
+          priority: 1000
+          direction: 'Inbound'
         }
       }
     ]
@@ -58,9 +71,15 @@ resource nic1 'Microsoft.Network/networkInterfaces@2020-11-01' = {
             id: subnetId
           }
           privateIPAllocationMethod: 'Dynamic'
+          publicIpAddress: {
+            id: publicIp.id
+          }
         }
       }
     ]
+    networkSecurityGroup: {
+      id: nsg.id
+    }
   }
 }
 
@@ -92,7 +111,6 @@ param osDiskType string = 'Standard_LRS'
 param osDiskDeleteOption string = 'Detach'
 param nicDeleteOption string = 'Delete'
 param computerName string = 'D-GenerativeVM'
-param patchAssessmentMode string = 'AutomaticByPlatform' // o el valor deseado
 param hibernationEnabled bool = false
 param vmZone string = '1' // Ajusta según la zona deseada
 
@@ -158,7 +176,8 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
 
 // --- Recurso de VM Extension para configuración custom en el SO ---
 resource vmExtension 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = {
-  name: '${prefix}-vm/customScript'
+  parent: vm
+  name: 'customScript'
   location: location
   properties: {
     publisher: 'Microsoft.Azure.Extensions'
@@ -174,9 +193,6 @@ resource vmExtension 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' =
       commandToExecute: 'bash configure-vm.sh'
     }
   }
-  dependsOn: [
-    vm
-  ]
 }
 
 // --- Sección de Storage ---
