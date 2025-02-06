@@ -7,13 +7,14 @@ export interface Copilot_History_Interface {
 }
 
 export interface Copilot_Service_Interface {
-  answer:string,
-  assistant: string,
+  answerChat:string,
+  answerAlert: string,
 }
 
 export interface Copilot_Request {
-  chat_history: Copilot_History_Interface[];
   question: string;
+  chat_history: Copilot_History_Interface[];
+  isAlert:boolean
 }
 
 class Copilot_Service {

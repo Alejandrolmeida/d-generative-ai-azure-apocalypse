@@ -20,15 +20,15 @@ const Notifications: React.FC = () => {
       setMessages((prevMessages) => [...prevMessages, msg]);
     });
 
-    // Simulación de recepción de mensajes cada 5 segundos
-    const intervalId = setInterval(() => {
-      const simulatedMessage = `( ${new Date().toLocaleTimeString()} ) - Mensaje simulado`;
-      setMessages((prevMessages) => [...prevMessages, simulatedMessage]);
-    }, 10000);
+    // // Simulación de recepción de mensajes cada 5 segundos
+    // const intervalId = setInterval(() => {
+    //   const simulatedMessage = `( ${new Date().toLocaleTimeString()} ) - Mensaje simulado`;
+    //   setMessages((prevMessages) => [...prevMessages, simulatedMessage]);
+    // }, 10000);
 
     return () => {
       connection.stop();
-      clearInterval(intervalId);
+      // clearInterval(intervalId);
     };
   }, []);
 
