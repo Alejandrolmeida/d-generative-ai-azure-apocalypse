@@ -1,0 +1,1 @@
+sshpass -p 'Admin123!' ssh azureuser@172.177.104.236
