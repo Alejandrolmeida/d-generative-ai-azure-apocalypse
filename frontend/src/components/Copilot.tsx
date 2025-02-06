@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import SimpleBar from "simplebar-react"; // si quieres agregar un scroll personalizado
 import "simplebar/dist/simplebar.min.css";
 import ReactMarkdown from "react-markdown";
+import store from "../common/redux/store";
 
 import Copilot_Service, {
   Copilot_Request,
@@ -15,6 +16,7 @@ const Copilot: React.FC = () => {
   // const isMdOrLarger = useMediaQuery({ query: "(max-width: 768px)" });
 
   //#region Chat Data
+  const [alertMessage, setAlertMessage] = useState(store.getState().alertMessage);
   const [inputValue, setInputValue] = useState("");
   const [messages, setMessages] = useState([
     {
@@ -46,18 +48,20 @@ const Copilot: React.FC = () => {
     ]);
   };
 
+  // Función para enviar un mensaje
   const handleSendMessage = async () => {
     if (inputValue.trim()) {
       const newMessage = {
         user: "user",
         text: inputValue.trim(),
       };
-      console.log(chatHistory);
+      //console.log(chatHistory);
       setMessages([...messages, newMessage]);
       setInputValue("");
       setMessageTextSend(inputValue.trim());
     }
   };
+
   //#endregion
 
   //#region Chat Line
@@ -93,7 +97,7 @@ const Copilot: React.FC = () => {
                 <ReactMarkdown>{message.text}</ReactMarkdown>
               </div>
               <div>
-                <span>{new Date().toLocaleTimeString()}</span>{" "}
+                {/* <span>{new Date().toLocaleTimeString()}</span>{" "} */}
                 <Link to="#">
                   <i className="icon ion-android-more-horizontal"></i>
                 </Link>
@@ -140,20 +144,21 @@ const Copilot: React.FC = () => {
         const request: Copilot_Request = {
           question: messageTextSend,
           chat_history: chatHistory.slice(-10), // Get the last 10 items
+          alert_history: [],
+          isAlert:false,
         };
-        console.log(request);
+        // console.log(request);
         const resp = await Copilot_Service.getChatResp(request);
         const botMessage = {
           user: "bot",
-          text: resp.answer,
-          assistant: resp.assistant,
+          text: resp.answerChat,
         };
         setMessages((prevMessages) => [...prevMessages, botMessage]);
         setChatHistory([
           ...chatHistory,
           {
             inputs: { question: messageTextSend },
-            outputs: { answer: resp.answer },
+            outputs: { answer: resp.answerChat },
           },
         ]);
       } catch (error) {
@@ -170,6 +175,27 @@ const Copilot: React.FC = () => {
       fetchData();
     }
   }, [messageTextSend]);
+  //#endregion
+
+   //#region useEffect Send Alert
+    useEffect(() => {
+    const unsubscribe = store.subscribe(() => {
+      const currentAlertMessage = store.getState().alertMessage;
+      if (alertMessage !== currentAlertMessage) {
+        setAlertMessage(store.getState().alertMessage);
+      }
+      console.log("alertMessage", alertMessage);
+      console.log("currentAlertMessage", currentAlertMessage);
+      const newMessage = {
+        user: "bot",
+        text: currentAlertMessage,
+      };
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [alertMessage]);
   //#endregion
 
   return (

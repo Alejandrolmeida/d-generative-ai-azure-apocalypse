@@ -14,6 +14,7 @@ export interface Copilot_Service_Interface {
 export interface Copilot_Request {
   question: string;
   chat_history: Copilot_History_Interface[];
+  alert_history: Copilot_History_Interface[];
   isAlert:boolean
 }
 
@@ -25,6 +26,7 @@ class Copilot_Service {
       "score",
       request // Envía el objeto request directamente como el cuerpo de la solicitud
     );
+    console.log("result.data", request);
     //await new Promise(resolve => setTimeout(resolve, 5000));
     return result.data;
   }

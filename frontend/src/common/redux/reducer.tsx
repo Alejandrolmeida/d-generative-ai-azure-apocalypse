@@ -27,6 +27,7 @@ export interface AppState {
     body: {
         class: string;
     };
+    alertMessage: string;
 }
 const initialState: AppState = {
     lang: "en",
@@ -57,7 +58,7 @@ const initialState: AppState = {
     body: {
         class: ""
     },
-
+    alertMessage: "",
 };
 
 export default function reducer(state = initialState, action: any) {
