@@ -1,4 +1,54 @@
 {
   "package": {},
-  "code": {}
+  "code": {
+    "dGenerative.jinja2": {
+      "type": "llm",
+      "inputs": {
+        "chat_history": {
+          "type": [
+            "string"
+          ]
+        },
+        "query": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "dGenerative.jinja2"
+    },
+    "dGenerativeAlerts.jinja2": {
+      "type": "llm",
+      "inputs": {
+        "query": {
+          "type": [
+            "string"
+          ]
+        },
+        "chat_history": {
+          "type": [
+            "string"
+          ]
+        },
+        "alert_history": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "dGenerativeAlerts.jinja2"
+    },
+    "Evento.py": {
+      "type": "python",
+      "inputs": {
+        "input1": {
+          "type": [
+            "string"
+          ]
+        }
+      },
+      "source": "Evento.py",
+      "function": "my_python_tool"
+    }
+  }
 }

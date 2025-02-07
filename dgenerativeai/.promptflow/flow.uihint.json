@@ -1,3 +1,23 @@
 {
-  "nodes": {}
+  "nodes": {
+    "dGenerative": {
+      "variant_0": {
+        "inputs": {
+          "is_user_query": [],
+          "query": [],
+          "chat_history": []
+        }
+      }
+    },
+    "dGenerativeAlerts": {
+      "variant_0": {
+        "inputs": {
+          "chat_history": [],
+          "question": [],
+          "query": [],
+          "alert_history": []
+        }
+      }
+    }
+  }
 }

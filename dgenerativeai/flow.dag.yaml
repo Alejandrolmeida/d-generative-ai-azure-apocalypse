@@ -1,3 +1,71 @@
-inputs: {}
-outputs: {}
-nodes: []
+inputs:
+  question:
+    type: string
+    default: ¿Cómo soluciono este problema?
+    is_chat_input: true
+    is_chat_history: false
+  chat_history:
+    type: list
+    default: []
+    is_chat_history: true
+  isAlert:
+    type: bool
+    default: false
+    is_chat_history: false
+  alert_history:
+    type: list
+    default:
+    - user: "Alerta: CPU al 10%"
+      assistant: ¡Cuidado alguien está sobrecargando el sistema jugando al buscaminas!
+    - user: "Alerta: Memoria RAM al 2%"
+      assistant: La memoria está tan vacía que podemos oír eco dentro del servidor.
+    - user: "Alerta: Temperatura del servidor a -2°C"
+      assistant: ¡El sistema se ha convertido en un congelador! A este paso,
+        almacenaremos helados en el rack.
+    is_chat_history: false
+outputs:
+  answerChat:
+    type: string
+    reference: ${dGenerative.output}
+  answerAlert:
+    type: string
+    reference: ${dGenerativeAlerts.output}
+nodes:
+- name: dGenerative
+  type: llm
+  source:
+    type: code
+    path: dGenerative.jinja2
+  inputs:
+    deployment_name: gpt-4o
+    temperature: 0.5
+    query: ${inputs.question}
+    chat_history: ${inputs.chat_history}
+  connection: oai_copilotcsp
+  api: chat
+  activate:
+    when: ${inputs.isAlert}
+    is: false
+- name: dGenerativeAlerts
+  type: llm
+  source:
+    type: code
+    path: dGenerativeAlerts.jinja2
+  inputs:
+    deployment_name: gpt-4o
+    temperature: 0.5
+    chat_history: ${inputs.chat_history}
+    query: ${inputs.question}
+    alert_history: ${inputs.alert_history}
+  connection: oai_copilotcsp
+  api: chat
+  activate:
+    when: ${inputs.isAlert}
+    is: true
+- name: Evento
+  type: python
+  source:
+    type: code
+    path: Evento.py
+  inputs:
+    input1: ${dGenerativeAlerts.output}

@@ -1,14 +1,29 @@
 {
   "nodeLayouts": {
     "inputs": {
-      "x": 50,
-      "y": 50,
+      "x": 465,
+      "y": 42,
       "index": -1
     },
     "outputs": {
-      "x": 50,
-      "y": 350,
+      "x": 230,
+      "y": 310,
       "index": -1
+    },
+    "dGenerative": {
+      "x": 140,
+      "y": 176,
+      "index": 0
+    },
+    "dGenerativeAlerts": {
+      "x": 480,
+      "y": 176,
+      "index": 1
+    },
+    "Evento": {
+      "x": 490,
+      "y": 310,
+      "index": 2
     }
   },
   "orientation": "Vertical"
